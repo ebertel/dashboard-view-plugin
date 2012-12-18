@@ -39,7 +39,7 @@ public class FailedTestsPortlet extends DashboardPortlet {
             List<CaseResult> failedTests = tra.getFailedTests();
             if (failedTests != null) {
               for (CaseResult failedTest : failedTests) {
-                results.add(new FailedTestResult(job, failedTest.getFullName(), failedTest.getAge()));
+                results.add(new FailedTestResult(job, failedTest));
               }
             }
           }
@@ -49,7 +49,7 @@ public class FailedTestsPortlet extends DashboardPortlet {
             List<CaseResult> failedTests = surefireTestResults.getFailedTests();
             if (failedTests != null) {
               for (CaseResult failedTest : failedTests) {
-                results.add(new FailedTestResult(job, failedTest.getFullName(), failedTest.getAge()));
+                results.add(new FailedTestResult(job, failedTest));
               }
             }
           }
@@ -59,7 +59,7 @@ public class FailedTestsPortlet extends DashboardPortlet {
 
     Collections.sort(results, new Comparator<FailedTestResult>() {
       public int compare(FailedTestResult ltr, FailedTestResult rtr) {
-        return rtr.getAge()-ltr.getAge();
+        return rtr.getResult().getAge()-ltr.getResult().getAge();
       }
     });
 

@@ -1,29 +1,28 @@
 package hudson.plugins.view.dashboard.test;
 
 import hudson.model.Job;
+import hudson.tasks.junit.CaseResult;
 
 public class FailedTestResult {
 
-   private Job job;
-   private String name;
-   private int age;
-   public FailedTestResult(Job job, String name, int age) {
-      super();
-      this.job = job;
-      this.name = name;
-      this.age = age;
-   }
+  private Job job;
+  private CaseResult result;
 
+
+  public FailedTestResult(Job job, CaseResult result) {
+    this.job = job;
+    this.result = result;
+  }
 
   public Job getJob() {
     return job;
   }
 
-  public String getName() {
-    return name;
+  public CaseResult getResult() {
+    return result;
   }
 
-  public int getAge() {
-    return age;
+  public String getUrl() {
+    return result.getOwner().getUrl() + "testReport" + result.getUrl();
   }
 }

@@ -23,17 +23,64 @@ THE SOFTWARE.
 -->
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:dp="/hudson/plugins/view/dashboard" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <dp:decorate portlet="${it}" width="3">
+  <script type="text/javascript">
+		<!-- TODO make sure load doesn't happen every time -->
+		function showStackTrace(id,query) {
+			var element = document.getElementById(id)
+			element.style.display = "";
+			document.getElementById(id + "-showlink").style.display = "none";
+			document.getElementById(id + "-hidelink").style.display = "";
+
+			var rqo = new XMLHttpRequest();
+			rqo.open('GET', query, true);
+			rqo.onreadystatechange = function() { element.innerHTML = rqo.responseText; }
+			rqo.send(null);
+		}
+
+		function hideStackTrace(id) {
+			document.getElementById(id).style.display = "none";
+			document.getElementById(id + "-showlink").style.display = "";
+			document.getElementById(id + "-hidelink").style.display = "none";
+		}
+  </script>
+
+  <dp:decorate portlet="${it}" width="4">
     <tr>
-      <td class="pane-header" align="center">Test</td>
-      <td class="pane-header" align="center">${%Job}</td>
-      <td class="pane-header" align="center">Age</td>
+      <td class="pane-header" align="left">Age</td>
+      <td class="pane-header" align="left">Test</td>
+      <td class="pane-header" align="left">${%Job}</td>
+      <td class="pane-header" align="left">Duration</td>
     </tr>
-    <j:forEach var="tr" items="${it.getFailedTests(jobs)}">
+    <j:forEach var="ft" items="${it.getFailedTests(jobs)}">
+      <j:set var="r" value="${ft.result}"/>
 	  	<tr style="border: 1px #bbb solid;">
-	  	  <td>${tr.name}</td>
-	  	  <td><dp:jobLink job="${tr.job}"/></td>
-	  	  <td>${tr.age}</td>
+        <td class="pane" style="text-align:right;">
+          <a href="${rootURL}/${r.failedSinceRun.url}" class="model-link">${r.age}</a>
+        </td>
+
+        <td class="pane">
+          <a id="test-${r.fullName}-showlink"
+             href="javascript:showStackTrace('test-${h.jsStringEscape(r.fullName)}','${ft.url}/summary')">&gt;&gt;&gt;</a>
+          <a id="test-${r.fullName}-hidelink" style="display:none"
+             href="javascript:hideStackTrace('test-${h.jsStringEscape(r.fullName)}')">&lt;&lt;&lt;</a>
+          <st:nbsp/>
+          <a href="${ft.url}" class="model-link"><st:out value="${r.fullName}"/></a>
+          <st:nbsp/>
+          <j:forEach var="badge" items="${r.testActions}">
+            <st:include it="${badge}" page="badge.jelly" optional="true"/>
+          </j:forEach>
+          <div id="test-${r.fullName}" class="hidden" style="display:none">
+            ${%Loading...}
+          </div>
+        </td>
+
+        <td>
+          <dp:jobLink job="${ft.job}"/>
+        </td>
+
+        <td class="pane" style="text-align:right;" data="${r.duration}">
+          ${r.durationString}
+        </td>
 	  	</tr>
     </j:forEach>
   </dp:decorate>
