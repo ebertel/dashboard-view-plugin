@@ -47,6 +47,7 @@ THE SOFTWARE.
   <dp:decorate portlet="${it}" width="4">
     <tr>
       <td class="pane-header" align="left">Age</td>
+      <td class="pane-header" align="left">Failure Rate</td>
       <td class="pane-header" align="left">Test</td>
       <td class="pane-header" align="left">${%Job}</td>
       <td class="pane-header" align="left">Duration</td>
@@ -54,8 +55,12 @@ THE SOFTWARE.
     <j:forEach var="ft" items="${it.getFailedTests(jobs)}">
       <j:set var="r" value="${ft.result}"/>
 	  	<tr style="border: 1px #bbb solid;">
-        <td class="pane" style="text-align:right;">
+        <td class="pane" style="text-align:left;">
           <a href="${rootURL}/${r.failedSinceRun.url}" class="model-link">${r.age}</a>
+        </td>
+
+        <td class="pane" style="text-align:left;">
+          ${ft.failureRate}
         </td>
 
         <td class="pane">
@@ -78,7 +83,7 @@ THE SOFTWARE.
           <dp:jobLink job="${ft.job}"/>
         </td>
 
-        <td class="pane" style="text-align:right;" data="${r.duration}">
+        <td class="pane" style="text-align:left;" data="${r.duration}">
           ${r.durationString}
         </td>
 	  	</tr>

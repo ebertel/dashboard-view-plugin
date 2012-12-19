@@ -25,4 +25,18 @@ public class FailedTestResult {
   public String getUrl() {
     return result.getOwner().getUrl() + "testReport" + result.getUrl();
   }
+
+  public String getFailureRate() {
+    int tests = 0, fails = 0;
+    CaseResult oldResult = result;
+    do {
+      tests++;
+      if (!oldResult.isPassed()) {
+        fails++;
+      }
+      oldResult = oldResult.getPreviousResult();
+    } while (oldResult != null);
+
+    return fails + " / " + tests;
+  }
 }
